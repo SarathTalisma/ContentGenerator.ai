@@ -2,6 +2,12 @@ import React, { useState } from 'react';
 import { Twitter, Linkedin, Instagram, Copy, Wand2, Image as ImageIcon, X, ExternalLink, Plus } from 'lucide-react';
 import './ContentGenerator.css';
 
+const UNSPLASH_ACCESS_KEY = import.meta.env.VITE_UNSPLASH_ACCESS_KEY;
+
+if (!UNSPLASH_ACCESS_KEY) {
+    console.error('Missing Unsplash API key in environment variables');
+}
+
 const ContentGenerator = () => {
     const [prompt, setPrompt] = useState('');
     const [platform, setPlatform] = useState('twitter');
@@ -51,7 +57,7 @@ const ContentGenerator = () => {
     };
 
     const searchImages = async (pageNum = 1, append = false) => {
-        if (!imageSearch.trim()) return;
+        if (!imageSearch.trim() || !UNSPLASH_ACCESS_KEY) return;
 
         setImageLoading(true);
         setError('');
@@ -62,12 +68,15 @@ const ContentGenerator = () => {
         }
 
         try {
-            const response = await fetch(`https://api.unsplash.com/search/photos?query=${encodeURIComponent(imageSearch)}&page=${pageNum}&per_page=12`, {
-                headers: {
-                    'Accept': 'application/json',
-                    'Authorization': `Client-ID aC3kBXaZALBQp-g6yzD6R11lCh1yPriMh78Qorzg97E`,
-                },
-            });
+            const response = await fetch(
+                `https://api.unsplash.com/search/photos?query=${encodeURIComponent(imageSearch)}&page=${pageNum}&per_page=12`,
+                {
+                    headers: {
+                        'Accept': 'application/json',
+                        'Authorization': `Client-ID ${UNSPLASH_ACCESS_KEY}`,
+                    },
+                }
+            );
 
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
