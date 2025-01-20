@@ -36,7 +36,7 @@ const platformPrompts = {
   },
   instagram: {
     prefix: "Write an engaging Instagram caption about:",
-    maxLength: 2200
+    maxLength: 2500
   }
 };
 
@@ -100,7 +100,7 @@ app.get('/api/images/search', async (req, res) => {
       params: {
         query,
         page: 1,
-        per_page: 9,
+        per_page: 12,
         orientation: 'landscape',
       },
       headers: {
